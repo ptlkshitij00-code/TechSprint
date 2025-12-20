@@ -1,0 +1,48 @@
+/* --- Background Setup --- */
+.bg-image {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    
+    /* Updated to the specific Unsplash image you requested.
+       (Photo by Porter Raab: Brown concrete building under blue sky)
+    */
+    background-image: url('https://images.unsplash.com/photo-1607203698481-22923769919c?q=80&w=1920&auto=format&fit=crop');
+    
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    
+    /* The 30px Blur Effect */
+    filter: blur(30px);
+    
+    /* Scales image slightly to hide blurred edges */
+    transform: scale(1.1);
+    z-index: -2;
+}
+
+.bg-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* Adds a dark tint so white text is readable */
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+}
+
+/* --- Card Design --- */
+.role-card {
+    background: rgba(255, 255, 255, 0.9); /* Glass effect */
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.role-card:hover {
+    transform: translateY(-10px); /* Lifts card up on hover */
+    background: #ffffff;
+}
+
+/* --- Icon Sizing --- */
+.icon-large {
+    font-size: 5rem;
+}
