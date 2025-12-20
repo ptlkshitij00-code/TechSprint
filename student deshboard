@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Smart Attendance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        /* 1. BLURRED COLLEGE BACKGROUND */
+        body {
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1470&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: -1;
+        }
+        .container-fluid { position: relative; z-index: 1; }
+        
+        /* Glassmorphism Cards */
+        .stat-card {
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
+        
+        .profile-photo {
+            width: 85px; height: 85px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .percentage-circle {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#198754 0% 85%, #e9ecef 85% 100%);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            margin: 0 auto;
+        }
+        .percentage-circle::after {
+            content: "85%";
+            position: absolute;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1.8rem;
+            color: #198754;
+        }
+    </style>
+</head>
+<body class="py-4">
+
+    <div class="container">
+        
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="stat-card p-4 d-flex flex-column flex-md-row align-items-center">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" alt="Profile" class="profile-photo mb-3 mb-md-0 me-md-4">
+                    <div class="text-center text-md-start">
+                        <h2 class="fw-bold text-dark mb-1">Welcome, KSHITIJ PATEL</h2>
+                        <p class="text-secondary mb-0 fw-medium">BE-CSE-3 | Roll No: 2025001</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            
+            <div class="col-lg-4">
+                <div class="stat-card p-4 h-100 text-center">
+                    <h5 class="fw-bold text-secondary mb-4">Overall Attendance</h5>
+                    <div class="percentage-circle mb-3"></div>
+                    <h4 class="mb-1">Excellent!</h4>
+                    <p class="text-muted small">You are well above the 75% threshold.</p>
+                    <hr class="my-4">
+                    <div class="d-flex justify-content-between px-3">
+                        <div class="text-center"><h5 class="fw-bold mb-0">45</h5><small class="text-muted">Present</small></div>
+                        <div class="text-center"><h5 class="fw-bold mb-0">53</h5><small class="text-muted">Total</small></div>
+                        <div class="text-center"><h5 class="fw-bold text-danger mb-0">8</h5><small class="text-muted">Absent</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="stat-card p-4 h-100">
+                    <h5 class="fw-bold text-secondary mb-4"><i class="bi bi-bar-chart-fill me-2"></i>Subject-wise Attendance</h5>
+                    <div class="vstack gap-4">
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-bold">Data Structure & Algorithms</span><span class="fw-bold text-success">90%</span>
+                            </div>
+                            <div class="progress" style="height: 10px; border-radius: 10px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 90%"></div>
+                            </div>
+                            <small class="text-muted">Attended: 18/20 classes</small>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-bold">Operating Systems</span><span class="fw-bold text-warning">72%</span>
+                            </div>
+                            <div class="progress" style="height: 10px; border-radius: 10px;">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 72%"></div>
+                            </div>
+                            <small class="text-muted">Attended: 13/18 classes</small>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="fw-bold">Mathematics - III</span><span class="fw-bold text-success">88%</span>
+                            </div>
+                            <div class="progress" style="height: 10px; border-radius: 10px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 88%"></div>
+                            </div>
+                            <small class="text-muted">Attended: 14/16 classes</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="stat-card p-4">
+                    <h5 class="fw-bold text-secondary mb-3"><i class="bi bi-calendar-check me-2"></i>Mark Attendance for Today</h5>
+                    <div class="table-responsive">
+                        <table class="table table-borderless align-middle mb-0">
+                            <thead class="table-light rounded">
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                    <th>Location</th> <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-bottom">
+                                    <td>09:00 AM</td>
+                                    <td>Data Structures</td>
+                                    <td><span class="badge bg-secondary">Pending</span></td>
+                                    <td class="location-cell text-muted small"><i class="bi bi-geo-alt"></i> -</td>
+                                    <td class="text-end">
+                                        <button class="btn btn-primary btn-sm rounded-pill px-3" onclick="openCamera('Data Structures', this)">Mark Present</button>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom">
+                                    <td>10:00 AM</td>
+                                    <td>Operating Systems</td>
+                                    <td><span class="badge bg-success">Present</span></td>
+                                    <td class="text-success small"><i class="bi bi-geo-alt-fill"></i> LH-102 (Campus)</td>
+                                    <td class="text-end">
+                                        <button class="btn btn-success btn-sm rounded-pill px-3" disabled><i class="bi bi-check2"></i> Marked</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>11:00 AM</td>
+                                    <td>Mathematics III</td>
+                                    <td><span class="badge bg-secondary">Pending</span></td>
+                                    <td class="location-cell text-muted small"><i class="bi bi-geo-alt"></i> -</td>
+                                    <td class="text-end">
+                                        <button class="btn btn-primary btn-sm rounded-pill px-3" onclick="openCamera('Mathematics III', this)">Mark Present</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="cameraModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Verify Identity & Location</h5>
+                    <button type="button" class="btn-close" onclick="closeCamera()"></button>
+                </div>
+                <div class="modal-body text-center pt-0">
+                    <p class="text-muted small mb-3">Subject: <span id="modalSubject" class="text-primary fw-bold"></span></p>
+                    <div class="position-relative d-inline-block rounded-3 overflow-hidden bg-black" style="width: 320px; height: 240px;">
+                        <video id="video" width="320" height="240" autoplay style="object-fit: cover;"></video>
+                    </div>
+                    <div id="locStatus" class="mt-2 text-warning small"><i class="bi bi-hourglass-split"></i> Waiting for location...</div>
+                </div>
+                <div class="modal-footer border-0 justify-content-center pb-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" onclick="closeCamera()">Cancel</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" id="captureBtn">Verify & Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentBtn = null;
+        let stream = null;
+        let userLocation = null;
+        const video = document.getElementById('video');
+        const modalEl = document.getElementById('cameraModal');
+        const modal = new bootstrap.Modal(modalEl);
+        const locStatus = document.getElementById('locStatus');
+
+        async function openCamera(subject, btn) {
+            currentBtn = btn;
+            document.getElementById('modalSubject').innerText = subject;
+            userLocation = null; // Reset location
+            locStatus.innerHTML = '<i class="bi bi-hourglass-split"></i> Fetching location...';
+            locStatus.className = "mt-2 text-warning small";
+            
+            modal.show();
+            
+            // 1. Start Camera
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (err) {
+                alert("Camera permission is required.");
+                modal.hide();
+                return;
+            }
+
+            // 2. Fetch Location immediately
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude.toFixed(4),
+                            lng: position.coords.longitude.toFixed(4)
+                        };
+                        locStatus.innerHTML = `<i class="bi bi-geo-alt-fill"></i> Location Found: ${userLocation.lat}, ${userLocation.lng}`;
+                        locStatus.className = "mt-2 text-success small";
+                    },
+                    (error) => {
+                        locStatus.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Location denied.';
+                        locStatus.className = "mt-2 text-danger small";
+                    }
+                );
+            } else {
+                locStatus.innerHTML = "Geolocation not supported.";
+            }
+        }
+
+        function closeCamera() {
+            if(stream) {
+                stream.getTracks().forEach(t => t.stop());
+            }
+            modal.hide();
+        }
+
+        document.getElementById('captureBtn').addEventListener('click', () => {
+            if(currentBtn) {
+                // Change Button State
+                currentBtn.className = "btn btn-success btn-sm rounded-pill px-3";
+                currentBtn.innerHTML = '<i class="bi bi-check2"></i> Marked';
+                currentBtn.disabled = true;
+                
+                // Update Status Badge
+                const row = currentBtn.closest('tr');
+                const badge = row.querySelector('.badge');
+                badge.className = "badge bg-success";
+                badge.innerText = "Present";
+
+                // Update Location Column
+                const locCell = row.querySelector('.location-cell');
+                if(userLocation) {
+                    // Create a Google Maps link
+                    locCell.innerHTML = `<a href="https://maps.google.com/?q=${userLocation.lat},${userLocation.lng}" target="_blank" class="text-decoration-none text-primary"><i class="bi bi-geo-alt-fill"></i> ${userLocation.lat}, ${userLocation.lng}</a>`;
+                    locCell.classList.remove('text-muted');
+                } else {
+                    locCell.innerHTML = `<span class="text-danger"><i class="bi bi-geo-alt-slash"></i> Unknown</span>`;
+                }
+            }
+            closeCamera();
+        });
+    </script>
+</body>
+</html>
