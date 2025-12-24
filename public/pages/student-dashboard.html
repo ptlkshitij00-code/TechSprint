@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Smart Attendance</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="page-dashboard">
+
+    <nav class="navbar navbar-expand-lg navbar-glass fixed-top mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#"><i class="bi bi-mortarboard-fill"></i> SmartAttend</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav gap-3">
+                    <li class="nav-item"><a class="nav-link active-view"
+                            onclick="switchView('dashboard', this)">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchView('timetable', this)">Timetable</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchView('reports', this)">Reports</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchView('notices', this)">Notices <span
+                                class="badge bg-danger rounded-circle small">2</span></a></li>
+                </ul>
+            </div>
+
+            <div class="d-none d-lg-flex align-items-center gap-3">
+                <div class="dropdown me-2">
+                    <button class="btn btn-light position-relative" data-bs-toggle="dropdown" title="Notifications">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span id="notifBadge"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end p-2 shadow" style="min-width: 260px;">
+                        <li class="fw-bold ps-2">Notifications</li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <div id="notifList" style="max-height:220px; overflow:auto;"></div>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item text-center small text-primary" href="#"
+                                onclick="clearNotifications()">Clear All</a></li>
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <button class="btn btn-light rounded-circle p-0"
+                        style="width: 40px; height: 40px; overflow: hidden;" data-bs-toggle="dropdown">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80"
+                            class="w-100 h-100 object-fit-cover" alt="Profile">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="switchView('profile')">Profile & Settings</a>
+                        </li>
+                        <li><a class="dropdown-item text-danger" href="#" onclick="handleLogout(event)">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 90px;">
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="glass-card p-4 d-flex flex-column flex-md-row align-items-center">
+                    <a onclick="switchView('profile')"
+                        style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:1rem;">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80"
+                            alt="Profile" class="profile-photo mb-3 mb-md-0 me-md-4">
+                        <div class="text-center text-md-start">
+                            <h2 class="fw-bold text-dark mb-1">Welcome, KSHITIJ PATEL</h2>
+                            <p class="text-secondary mb-0 fw-bold">BE-CSE-3rd Sem | Roll No: 2025001</p>
+                            <small class="text-muted" id="currentDateDisplay">Loading Date...</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low attendance banner (hidden by default) -->
+        <div id="lowAttendanceBanner" class="d-none container mb-3">
+            <div class="glass-card p-3 border-start border-4 border-danger">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="fw-bold text-danger mb-1">Low Attendance Warning</h6>
+                        <small id="lowAttendanceText" class="text-muted">You have low attendance in one or more
+                            subjects.</small>
+                    </div>
+                    <div><button class="btn btn-danger btn-sm"
+                            onclick="switchView('reports', document.querySelector('.nav-link[onclick*=reports]'))">View
+                            Reports</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard" class="view-section active">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="glass-card p-4 h-100 text-center">
+                        <h5 class="fw-bold text-secondary mb-4">Overall Status</h5>
+                        <div class="percentage-circle mb-3"></div>
+                        <h4 class="mb-1 text-success fw-bold">Excellent!</h4>
+                        <p class="text-muted small">You are safe above 75%.</p>
+                        <hr class="my-4 opacity-25">
+                        <div class="d-flex justify-content-between px-3">
+                            <div>
+                                <h5 class="fw-bold mb-0">45</h5><small class="text-muted">Present</small>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">53</h5><small class="text-muted">Total</small>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-danger mb-0">8</h5><small class="text-muted">Absent</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="glass-card p-4 h-100">
+                        <h5 class="fw-bold text-secondary mb-4"><i class="bi bi-graph-up-arrow me-2"></i>Subject
+                            Performance</h5>
+                        <div class="vstack gap-4">
+                            <div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">Operating Systems</span><span
+                                        class="fw-bold text-warning">72%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" style="width: 72%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">Data Structures</span><span
+                                        class="fw-bold text-success">90%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">Mathematics III</span><span
+                                        class="fw-bold text-success">88%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" style="width: 88%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-2">
+                <div class="col-lg-4">
+                    <div class="glass-card p-3 h-100">
+                        <h6 class="fw-bold text-secondary">Next Up</h6>
+                        <div id="nextUp" class="mt-3">
+                            <div class="text-muted small">Loading next class...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="glass-card p-3 h-100">
+                        <h6 class="fw-bold text-secondary">Recent Activity</h6>
+                        <ul id="activityFeed" class="list-group list-group-flush mt-3 small">
+                            <li class="list-group-item">No recent activity</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold text-secondary mb-0"><i class="bi bi-clock-history me-2"></i>Today's
+                                Schedule</h5>
+                            <span class="badge bg-primary rounded-pill px-3" id="dayBadge">Today</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead class="table-light rounded">
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Subject</th>
+                                        <th>Status</th>
+                                        <th>Location</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scheduleTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="timetable" class="view-section">
+            <div class="row">
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h4 class="fw-bold text-secondary mb-4"><i class="bi bi-calendar-week me-2"></i>Class Timetable
+                        </h4>
+
+                        <ul class="nav nav-pills mb-3 d-lg-none" id="pills-tab" role="tablist">
+                            <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill"
+                                    data-bs-target="#tab-mon">Mon</button></li>
+                            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill"
+                                    data-bs-target="#tab-tue">Tue</button></li>
+                            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill"
+                                    data-bs-target="#tab-wed">Wed</button></li>
+                            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill"
+                                    data-bs-target="#tab-thu">Thu</button></li>
+                            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill"
+                                    data-bs-target="#tab-fri">Fri</button></li>
+                            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill"
+                                    data-bs-target="#tab-sat">Sat</button></li>
+                        </ul>
+
+                        <div class="row g-3" id="timetableGrid">
+                        </div>
+
+                        <div class="d-lg-none tab-content" id="timetableMobileTabs">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="notices" class="view-section">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="fw-bold text-secondary mb-0"><i class="bi bi-megaphone me-2"></i>Notice Board
+                            </h4>
+                            <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-funnel"></i>
+                                Filter</button>
+                        </div>
+
+                        <div class="notice-item urgent">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="fw-bold mb-1 text-danger">Mid-Semester Examination Schedule</h6>
+                                <span class="badge bg-danger bg-opacity-10 text-danger">Urgent</span>
+                            </div>
+                            <p class="mb-1 small">The Mid-Sem exams for CSE 3rd Sem will commence from Oct 15th.</p>
+                            <div class="notice-date"><i class="bi bi-calendar3"></i> Posted: Dec 20, 2025</div>
+                        </div>
+
+                        <div class="notice-item">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="fw-bold mb-1">Holiday Announcement</h6>
+                                <span class="badge bg-primary bg-opacity-10 text-primary">Info</span>
+                            </div>
+                            <p class="mb-1 small">College will remain closed on Friday, Dec 25th for Christmas.</p>
+                            <div class="notice-date"><i class="bi bi-calendar3"></i> Posted: Dec 19, 2025</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="reports" class="view-section">
+            <div class="glass-card p-3 mb-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0 ps-2">Attendance Analytics</h5>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-primary" onclick="updateReport('weekly', this)">Weekly</button>
+                    <button class="btn btn-outline-primary" onclick="updateReport('monthly', this)">Monthly</button>
+                    <button class="btn btn-outline-primary" onclick="updateReport('overall', this)">Overall</button>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-lg-8">
+                    <div class="glass-card p-4"><canvas id="trendChart" height="150"></canvas></div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="glass-card p-4 h-100"><canvas id="subjectChart" height="250"></canvas></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h6 class="fw-bold text-secondary mb-3">Detailed Subject Report</h6>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Subject Name</th>
+                                        <th>Total Classes</th>
+                                        <th>Attended</th>
+                                        <th>Absent</th>
+                                        <th>Attendance %</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Profile View -->
+        <div id="profile" class="view-section">
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="glass-card p-4">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img id="profilePhoto"
+                                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80"
+                                alt="Profile"
+                                style="width:140px;height:140px;border-radius:50%;object-fit:cover;border:4px solid white;box-shadow:0 6px 24px rgba(0,0,0,0.15);">
+                            <h3 id="pfName" class="fw-bold mt-3 mb-1">Kshitij Patel</h3>
+                            <div id="pfCourse" class="small text-muted mb-2">BE - CSE • 3rd Sem</div>
+                            <button class="btn btn-sm btn-outline-primary mb-3"
+                                onclick="alert('Contact Admin to change details')"><i
+                                    class="bi bi-pencil-square me-1"></i>Edit Profile</button>
+                        </div>
+
+                        <hr>
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="fw-bold small text-secondary">Date of Birth</h6>
+                                <div id="pfDOB">-</div>
+                            </div>
+                            <div class="col-3">
+                                <h6 class="fw-bold small text-secondary">Gender</h6>
+                                <div id="pfGender">-</div>
+                            </div>
+                            <div class="col-3">
+                                <h6 class="fw-bold small text-secondary">Blood Group</h6>
+                                <div id="pfBlood">-</div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div>
+                            <h6 class="fw-bold small text-secondary">Family</h6>
+                            <div class="row">
+                                <div class="col-6"><small class="text-muted">Father</small>
+                                    <div id="pfFather">-</div>
+                                </div>
+                                <div class="col-6"><small class="text-muted">Mother</small>
+                                    <div id="pfMother">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="glass-card p-4">
+                        <h6 class="fw-bold text-secondary">Academic Details</h6>
+                        <div class="mt-3 small text-muted">Identifiers</div>
+                        <div class="row mt-2">
+                            <div class="col-12"><strong>Admission No:</strong> <span id="pfAdmission">-</span></div>
+                            <div class="col-12"><strong>Roll No:</strong> <span id="pfRoll">-</span></div>
+                            <div class="col-12"><strong>University Reg. ID:</strong> <span id="pfReg">-</span></div>
+                        </div>
+
+                        <hr>
+                        <div class="small text-muted">Course Info</div>
+                        <div class="mt-2">
+                            <div><strong>Degree:</strong> <span id="pfDegree">-</span></div>
+                            <div><strong>Branch:</strong> <span id="pfBranch">-</span></div>
+                            <div><strong>Semester:</strong> <span id="pfSemester">-</span></div>
+                            <div><strong>Batch:</strong> <span id="pfBatch">-</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h6 class="fw-bold text-secondary">Contact & Location</h6>
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <div class="small text-muted">College Email</div>
+                                <div id="pfEmailCollege">-</div>
+                                <div class="small text-muted mt-2">Personal Email</div>
+                                <div id="pfEmailPersonal">-</div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="small text-muted">Phone</div>
+                                <div id="pfPhone">-</div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="small text-muted">Current Address</div>
+                                <div id="pfAddressCurrent">-</div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div>
+                            <div class="small text-muted">Permanent Address</div>
+                            <div id="pfAddressPermanent">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Profile & Settings Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Profile & Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex gap-3 align-items-center mb-3">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80"
+                            class="profile-photo">
+                        <div>
+                            <div class="fw-bold">KSHITIJ PATEL</div>
+                            <div class="small text-muted">Roll No: 2025001 • BE-CSE • 3rd Sem</div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h6 class="fw-bold small text-secondary">Preferences</h6>
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input" type="checkbox" id="darkModeToggle"
+                            onchange="toggleDarkMode(this)">
+                        <label class="form-check-label small" for="darkModeToggle">Dark Mode</label>
+                    </div>
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input" type="checkbox" id="emailNotifToggle">
+                        <label class="form-check-label small" for="emailNotifToggle">Email Notifications</label>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" onclick="saveSettings()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cameraModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Attendance Verification</h5>
+                    <button type="button" class="btn-close" onclick="closeCamera()"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="text-muted small mb-2">Subject: <span id="modalSubject"
+                            class="text-primary fw-bold"></span></p>
+                    <div id="locationStep" class="mb-3 p-2 bg-light rounded">
+                        <div class="d-flex align-items-center justify-content-center gap-2">
+                            <div class="spinner-border spinner-border-sm text-primary" id="locSpinner"></div>
+                            <span id="locStatusText" class="small fw-bold">Verifying Geofence (15m)...</span>
+                        </div>
+                        <small id="distanceDisplay" class="d-block text-muted mt-1" style="font-size: 0.75rem;"></small>
+                    </div>
+                    <div id="cameraContainer" style="display: none; position: relative;">
+                        <video id="videoElement" autoplay playsinline></video>
+                        <div class="position-absolute bottom-0 start-50 translate-middle-x mb-3">
+                            <button class="btn btn-light rounded-circle shadow" style="width: 50px; height: 50px;"
+                                onclick="takeSnapshot()"><i class="bi bi-camera-fill fs-4"></i></button>
+                        </div>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                        <img id="photo" style="display: none; width: 100%; border-radius: 10px;">
+                    </div>
+                    <div id="errorMsg" class="alert alert-danger small mt-2 d-none"></div>
+                </div>
+                <div class="modal-footer border-0 justify-content-center pt-0">
+                    <button class="btn btn-primary rounded-pill px-4" id="submitBtn" disabled
+                        onclick="finalizeAttendance()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/socket.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/student-dashboard.js"></script>
+</body>
+
+</html>

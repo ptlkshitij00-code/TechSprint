@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance System</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        /* --- INTERNAL CSS --- */
+
+        /* 1. The Background Layer */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            /* LOCAL FILE REFERENCE - ENSURE YOU SAVED THE IMAGE AS background.jpg */
+            background-image: url('https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+
+            /* Blur Effect */
+            filter: blur(3px);
+            -webkit-filter: blur(3px);
+            /* Chrome/Safari support */
+
+            /* Scale up to hide blurred edges */
+            transform: scale(1.1);
+            z-index: -2;
+        }
+
+        /* 2. The Dark Overlay (Makes text readable) */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(241, 240, 245, 0.4);
+            z-index: -1;
+        }
+
+        /* 3. Card Styling */
+        .role-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+            background: #ffffff;
+        }
+
+        .icon-large {
+            font-size: 5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100 position-relative">
+
+        <div class="text-center mb-5 text-white">
+            <h1 class="display-3 fw-bold">Smart Attendance</h1>
+            <p class="fs-4">Select your login type</p>
+        </div>
+
+        <div class="row w-100 justify-content-center" style="max-width: 1100px;">
+
+            <div class="col-md-4 mb-4 mb-md-0">
+                <a href="pages/faculty-login" class="card role-card text-decoration-none text-center p-5 h-100">
+                    <div class="card-body">
+                        <i class="bi bi-person-video3 text-primary icon-large"></i>
+                        <h2 class="mt-4 fw-bold text-dark">FACULTY</h2>
+                        <p class="text-muted">Manage Classes & Attendance</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4 mb-4 mb-md-0">
+                <a href="pages/student-login" class="card role-card text-decoration-none text-center p-5 h-100">
+                    <div class="card-body">
+                        <i class="bi bi-backpack4 text-success icon-large"></i>
+                        <h2 class="mt-4 fw-bold text-dark">STUDENT</h2>
+                        <p class="text-muted">Mark Presence & View History</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a href="pages/admin-login" class="card role-card text-decoration-none text-center p-5 h-100">
+                    <div class="card-body">
+                        <i class="bi bi-shield-lock text-danger icon-large"></i>
+                        <h2 class="mt-4 fw-bold text-dark">ADMIN</h2>
+                        <p class="text-muted">Manage System & Users</p>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

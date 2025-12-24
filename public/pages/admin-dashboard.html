@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Smart Attendance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-text: #ffffff;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            color: var(--glass-text);
+            margin: 0;
+        }
+
+        /* Background Setup */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+            background-size: cover;
+            z-index: -2;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+            z-index: -1;
+        }
+
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            z-index: 1000;
+            transition: all 0.3s;
+            border-right: 1px solid var(--glass-border);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: all 0.25s;
+            display: block;
+            padding: 8px 10px;
+            text-decoration: none;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+        }
+
+        /* Form Controls customized for Glass */
+        .form-control,
+        .form-select {
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid var(--glass-border);
+            color: white;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background: rgba(0, 0, 0, 0.42);
+            color: white;
+            box-shadow: none;
+            border-color: #fff;
+        }
+
+        ::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        /* Helper for section visibility */
+        .section-container {
+            display: none;
+            /* Hidden by default, JS toggles this */
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: calc(var(--sidebar-width) * -1);
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+                background: rgba(15, 15, 21, 0.98);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+
+    <nav class="sidebar glass-card rounded-0 border-top-0 border-bottom-0 border-start-0" id="sidebar">
+        <h4 class="text-white text-center mb-4"><i class="bi bi-shield-lock-fill"></i> Admin Panel</h4>
+        <div class="nav flex-column">
+            <a href="#user-mgmt" class="nav-link active"><i class="bi bi-person-plus-fill"></i> Manage Users</a>
+            <a href="#reschedule" class="nav-link"><i class="bi bi-arrow-repeat"></i> Reschedule</a>
+            <a href="#daily-timetable" class="nav-link"><i class="bi bi-calendar3"></i> Update Daily Timetable</a>
+            <a href="#notices" class="nav-link"><i class="bi bi-megaphone-fill"></i> Notices</a>
+            <a href="#subjects" class="nav-link"><i class="bi bi-book-half"></i> Assign Subjects</a>
+            <button class="btn btn-outline-danger mt-4" onclick="logout()"><i class="bi bi-box-arrow-left"></i>
+                Logout</button>
+        </div>
+    </nav>
+
+    <div class="main-content" id="main-content">
+        <button class="btn btn-light d-md-none mb-3" id="sidebarToggle">
+            <i class="bi bi-list"></i> Menu
+        </button>
+
+        <div class="container-fluid">
+
+            <div id="user-mgmt" class="section-container">
+                <h3 class="mb-3">User Registration</h3>
+                <div class="glass-card">
+                    <form id="registerForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Full Name</label>
+                                <input type="text" class="form-control" id="regName" required
+                                    placeholder="e.g. John Doe">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Email Address</label>
+                                <input type="email" class="form-control" id="regEmail" required
+                                    placeholder="name@college.edu">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Role</label>
+                                <select class="form-select" id="regRole" required onchange="toggleStudentFields()">
+                                    <option value="" selected disabled>Select Role...</option>
+                                    <option value="Faculty">Faculty (Teacher)</option>
+                                    <option value="Student">Student</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Password</label>
+                                <input type="text" class="form-control" id="regPassword" value="College@123" readonly>
+                                <small class="text-white-50">Default password set.</small>
+                            </div>
+                        </div>
+
+                        <div id="studentFields" style="display: none;">
+                            <hr class="border-light">
+                            <h5 class="mb-3">Student Details</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label>Roll Number</label>
+                                    <input type="text" class="form-control" id="regRoll">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>Semester</label>
+                                    <select class="form-select" id="regSem">
+                                        <option value="1">1st Sem</option>
+                                        <option value="2">2nd Sem</option>
+                                        <option value="3">3rd Sem</option>
+                                        <option value="4">4th Sem</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>Branch</label>
+                                    <select class="form-select" id="regBranch">
+                                        <option value="CSE">CSE</option>
+                                        <option value="Civil">Civil</option>
+                                        <option value="Mech">Mechanical</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Create User</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="reschedule" class="section-container mt-5">
+                <h3 class="mb-3">Reschedule / Create Substitution</h3>
+                <div class="glass-card">
+                    <p class="text-white-50">Create a substitution for a class when the original teacher is absent.</p>
+                    <form id="rescheduleForm">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label>Date</label>
+                                <input type="date" class="form-control" id="ttDate" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Time Slot</label>
+                                <input type="time" class="form-control" id="ttTime" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Class / Section</label>
+                                <input type="text" class="form-control" id="ttClass" placeholder="e.g. CSE-A 3rd Sem"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label>Original Teacher (if known)</label>
+                                <select class="form-select" id="ttOriginalTeacher">
+                                    <option selected disabled>Select Faculty...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Assign New Teacher (Substitute)</label>
+                                <select class="form-select" id="ttTeacher" required>
+                                    <option selected disabled>Select Faculty...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Subject</label>
+                                <input type="text" class="form-control" id="ttSubject"
+                                    placeholder="e.g. Data Structures" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Create Substitution</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="daily-timetable" class="section-container mt-5">
+                <h3 class="mb-3">Update Daily Timetable</h3>
+                <div class="glass-card">
+                    <p class="text-white-50">Upload a complete timetable (Excel / CSV / Image) or save a new timetable
+                        document.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Upload Timetable (.xlsx, .xls, .csv or image)</label>
+                        <input type="file" class="form-control" id="ttFileInput" accept=".xlsx,.xls,.csv,image/*">
+                        <div class="mt-2">
+                            <button id="parseTtBtn" class="btn btn-primary">Parse & Preview</button>
+                            <button id="saveTtBtn" class="btn btn-success ms-2">Save Timetable to Firestore</button>
+                        </div>
+                        <div id="ttPreview" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notices" class="section-container mt-5">
+                <h3 class="mb-3">Issue Notices</h3>
+                <div class="glass-card">
+                    <form id="noticeForm">
+                        <div class="mb-3">
+                            <label>Notice Title</label>
+                            <input type="text" class="form-control" id="noticeTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Message / Details</label>
+                            <textarea class="form-control" id="noticeMsg" rows="3" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Priority</label>
+                                <select class="form-select" id="noticePriority">
+                                    <option value="Normal">Normal</option>
+                                    <option value="Urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Target Audience</label>
+                                <select class="form-select" id="noticeTarget">
+                                    <option value="All">Everyone</option>
+                                    <option value="Faculty">Faculty Only</option>
+                                    <option value="Students">Students Only</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info text-white w-100">Post Notice</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="subjects" class="section-container mt-5 mb-5">
+                <h3 class="mb-3">Faculty Subject Allocation</h3>
+                <div class="glass-card">
+                    <form id="subjectForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Select Faculty</label>
+                                <select class="form-select" id="subFaculty" required>
+                                    <option disabled selected>Select...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Subject Name</label>
+                                <input type="text" class="form-control" id="subName"
+                                    placeholder="e.g. Operating Systems" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Assign Subject</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/socket.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script src="../assets/js/admin-dashboard.js"></script>
+</body>
+
+</html>
