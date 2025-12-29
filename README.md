@@ -240,9 +240,6 @@ After running the seed script:
 
 This project is licensed under the ISC License.
 
-## 👥 Authors
-
-- **Sayan Karmakar** - *Initial work*
 
 ## 🙏 Acknowledgments
 
